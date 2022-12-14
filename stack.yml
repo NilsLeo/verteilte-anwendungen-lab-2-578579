@@ -1,0 +1,10 @@
+version: '3.1'
+services:
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: VA_TEST
+      MYSQL_ROOT_PASSWORD: admin_123
+    ports:
+    - 3306:3306
