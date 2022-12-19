@@ -35,7 +35,7 @@ public class UserEntity extends AbstractEntity implements UserModel {
     @Column(name = "ID", nullable = false, length = 36)
     private UUID id;
 
-@ManyToMany(cascade= CascadeType.ALL, fetch = FetchType.LAZY)
+@ManyToMany(cascade= CascadeType.ALL, fetch = FetchType.EAGER)
 @JoinTable(
 name = "PROJECT_USER_MAPPING",
 joinColumns = @JoinColumn(name = "USER_ID"),
