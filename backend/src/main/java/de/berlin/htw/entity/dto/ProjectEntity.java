@@ -84,7 +84,7 @@ public class ProjectEntity extends AbstractEntity implements ProjectModel {
     public ArrayList<String> getUsers(){
         ArrayList<String> userList = new ArrayList<>();
         for (UserEntity userEntity : users) {
-            userList.add("id: "+userEntity.getId());
+            userList.add(userEntity.getId());
         }
         return userList;
     }

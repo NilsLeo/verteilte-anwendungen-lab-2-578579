@@ -76,7 +76,7 @@ private Set<ProjectEntity> projects;
     public ArrayList<String> getProjects(){
         ArrayList<String> projectList = new ArrayList<>();
         for (ProjectEntity projectEntity : projects) {
-            projectList.add("id: "+projectEntity.getId());
+            projectList.add(projectEntity.getId());
         }
         return projectList;
     }
