@@ -92,7 +92,7 @@ public class UserJson implements UserModel {
         return projects;
     }
 
-    public void setProjects(ArrayList projects) {
+    public void setProjects(ArrayList<String> projects) {
         this.projects = projects;
     }
 }

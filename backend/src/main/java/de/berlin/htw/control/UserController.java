@@ -1,6 +1,9 @@
 package de.berlin.htw.control;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -13,7 +16,9 @@ import javax.ws.rs.NotFoundException;
 import org.jboss.logging.Logger;
 
 import de.berlin.htw.boundary.AlreadyExistsException;
+import de.berlin.htw.entity.dao.ProjectRepository;
 import de.berlin.htw.entity.dao.UserRepository;
+import de.berlin.htw.entity.dto.ProjectEntity;
 import de.berlin.htw.entity.dto.UserEntity;
 import de.berlin.htw.lib.model.UserModel;
 
@@ -28,6 +33,8 @@ public class UserController {
 
     @Inject
     UserRepository repository;
+    @Inject
+    ProjectRepository projectRepository;
     
     @Inject
     UserTransaction transaction;
@@ -76,6 +83,13 @@ public class UserController {
         }
         if(user.getEmail() != null) {
             entity.setEmail(user.getEmail());
+        }
+        if(user.getProjects() != null) {
+            Set<ProjectEntity> projectEntities = new HashSet<ProjectEntity>();
+            for (String projectId : user.getProjects()) {
+                projectEntities.add(projectRepository.get(projectId));
+            }
+            entity.setProjects(projectEntities);
         }
         return repository.set(entity);
     }

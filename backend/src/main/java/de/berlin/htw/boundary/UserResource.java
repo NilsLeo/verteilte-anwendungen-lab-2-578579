@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Path;
@@ -71,13 +72,28 @@ public class UserResource implements UserEndpoint {
 
     @Override
     public UserJson associateProject(String userId, String projectId, UserJson user) {
+
         if (user.getId() != null) {
             throw new BadRequestException("User ID should not be set in payload");
         } else {
             user.setId(userId);
-            ArrayList<ProjectEntity> projects= new ArrayList<>();
-            projects.add(projectRepository.get(projectId));
-            user.setProjects(projects);
+            ArrayList<String> projectIds;
+            System.out.println("arraylisttttt " + user.getProjects());
+
+            if (user.getProjects() != null){
+                System.out.println("ifassociateProject");
+
+                projectIds = user.getProjects();
+
+            }
+            else{
+                projectIds = new ArrayList<>();
+        System.out.println("elseassociateProject");
+
+
+            }
+            projectIds.add(projectId);
+            user.setProjects(projectIds);
         }
         final UserModel updatedUser = controller.updateUser(user);
         return new UserJson(updatedUser);
@@ -88,6 +104,33 @@ public class UserResource implements UserEndpoint {
         if (!controller.deleteUser(userId)) {
             throw new NotFoundException();
         }
+    }
+
+    @Override
+    public UserJson unAssociateProject(String userId, String projectId, @Valid UserJson user) {
+
+        if (user.getId() != null) {
+            throw new BadRequestException("User ID should not be set in payload");
+        }
+        else {
+            user.setId(userId);
+            ArrayList<String> projectIds;
+            if ((user.getProjects() != null) && !user.getProjects().isEmpty()){
+                projectIds = user.getProjects();
+        System.out.println("ifassociateProject");
+
+            }
+            else{
+                projectIds = new ArrayList<>();
+        System.out.println("elseassociateProject");
+
+
+            }
+            projectIds.add(projectId);
+            user.setProjects(projectIds);
+        }
+        final UserModel updatedUser = controller.updateUser(user);
+        return new UserJson(updatedUser);
     }
 
 }
