@@ -71,20 +71,28 @@ public class UserResource implements UserEndpoint {
     }
 
     @Override
-    public UserJson associateProject(String userId, String projectId, UserJson user) {
+    public UserJson associateProject(final String userId, final UserJson user) {
 
         if (user.getId() != null) {
             throw new BadRequestException("User ID should not be set in payload");
         } else {
             user.setId(userId);
         }
-        
-            ArrayList<String> projectIds;
-                projectIds = new ArrayList<>();
-                projectIds.add(projectId);
-                user.setProjects(projectIds);
         final UserModel updatedUser = controller.updateUser(user);
         return new UserJson(updatedUser);
+
+        // if (user.getId() != null) {
+        //     throw new BadRequestException("User ID should not be set in payload");
+        // } else {
+        //     user.setId(userId);
+        // }
+
+        //     ArrayList<String> projectIds;
+        //         projectIds = new ArrayList<>();
+        //         projectIds.add(projectId);
+        //         user.setProjects(projectIds);
+        // final UserModel updatedUser = controller.updateUser(user);
+        // return new UserJson(updatedUser);
     }
 
     @Override

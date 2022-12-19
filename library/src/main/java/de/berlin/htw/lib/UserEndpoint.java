@@ -65,14 +65,13 @@ public interface UserEndpoint {
         @Parameter(description = "User information", required = true) @Valid UserJson user);
 
     @PATCH
-    @Path("/{userId}/{projectId}")
+    @Path("add_project/{userId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Update information of a user.")
     @APIResponse(responseCode = "404", description = "The user does not exist")
     UserJson associateProject(
             @Parameter(description = "ID of the user", required = true) @PathParam("userId") String userId,
-            @Parameter(description = "ID of the project to be connected", required = true) @PathParam("projectId") String projectId,
             @Parameter(description = "User information", required = true) @Valid UserJson user);
     // @PATCH
     // @Path("/{userId}/{projectId}/remove")
