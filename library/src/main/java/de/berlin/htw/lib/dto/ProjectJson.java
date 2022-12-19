@@ -3,14 +3,21 @@ import de.berlin.htw.lib.model.ProjectModel;
 
 import java.util.ArrayList;
 
+import javax.json.bind.annotation.JsonbProperty;
+
 /**
  * @author Alexander Stanik [stanik@htw-berlin.de]
  */
 public class ProjectJson implements ProjectModel{
 
     private String id;
+    @JsonbProperty("title")
     private String title;
+
+    @JsonbProperty("description")
     private String description;
+
+    @JsonbProperty("users")
     private ArrayList<String> users;
 
     @Override
