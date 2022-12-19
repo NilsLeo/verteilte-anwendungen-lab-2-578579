@@ -12,7 +12,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import de.berlin.htw.control.ProjectController;
 import de.berlin.htw.control.UserController;
+import de.berlin.htw.entity.dao.ProjectRepository;
+import de.berlin.htw.entity.dto.ProjectEntity;
 import de.berlin.htw.lib.UserEndpoint;
 import de.berlin.htw.lib.dto.UserJson;
 import de.berlin.htw.lib.model.UserModel;
@@ -28,6 +31,8 @@ public class UserResource implements UserEndpoint {
 
     @Inject
     UserController controller;
+    @Inject
+    ProjectRepository projectRepository;
 
     @Override
     public List<UserJson> getUsers() {
@@ -59,6 +64,19 @@ public class UserResource implements UserEndpoint {
             throw new BadRequestException("User ID should not be set in payload");
         } else {
             user.setId(userId);
+        }
+        final UserModel updatedUser = controller.updateUser(user);
+        return new UserJson(updatedUser);
+    }
+
+    @Override
+    public UserJson updateUser(String userId, String projectId, UserJson user) {
+        if (user.getId() != null) {
+            throw new BadRequestException("User ID should not be set in payload");
+        } else {
+            ArrayList<ProjectEntity> projects= new ArrayList<>();
+            projects.add(projectRepository.get(projectId));
+            user.setProjects(projects);
         }
         final UserModel updatedUser = controller.updateUser(user);
         return new UserJson(updatedUser);

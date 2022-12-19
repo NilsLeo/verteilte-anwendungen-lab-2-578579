@@ -1,6 +1,7 @@
 package de.berlin.htw.lib.dto;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import javax.json.bind.annotation.JsonbDateFormat;
 import javax.json.bind.annotation.JsonbProperty;
@@ -30,7 +31,7 @@ public class UserJson implements UserModel {
     private String email;
 
     @JsonbProperty("projects")
-    private String projects;
+    private ArrayList<String> projects;
 
     @JsonbProperty("registered_date")
     @JsonbDateFormat("dd-MM-yyyy")
@@ -39,7 +40,7 @@ public class UserJson implements UserModel {
 
     @JsonbTransient
     private Integer age;
-    
+
     public UserJson() {
         // do nothing
     }
@@ -87,8 +88,11 @@ public class UserJson implements UserModel {
     }
 
     @Override
-    public String getProjects() {
+    public ArrayList<String> getProjects() {
         return projects;
     }
 
+    public void setProjects(ArrayList projects) {
+        this.projects = projects;
+    }
 }

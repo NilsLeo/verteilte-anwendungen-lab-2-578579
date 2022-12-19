@@ -10,6 +10,7 @@ import javax.transaction.UserTransaction;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
 
+import de.berlin.htw.lib.dto.ProjectJson;
 import org.jboss.logging.Logger;
 
 import de.berlin.htw.boundary.AlreadyExistsException;
@@ -22,13 +23,13 @@ import de.berlin.htw.lib.model.UserModel;
  */
 @RequestScoped
 public class UserController {
-    
+
     @Inject
     Logger logger;
 
     @Inject
     UserRepository repository;
-    
+
     @Inject
     UserTransaction transaction;
 
@@ -77,6 +78,9 @@ public class UserController {
         if(user.getEmail() != null) {
             entity.setEmail(user.getEmail());
         }
+        //if(user.getProjects() != null) {
+        //    entity.setProjects(user.getProjects().forEach(project -> ge);
+        //}
         return repository.set(entity);
     }
 

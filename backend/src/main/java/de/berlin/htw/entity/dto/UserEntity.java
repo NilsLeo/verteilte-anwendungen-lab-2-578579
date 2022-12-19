@@ -1,19 +1,12 @@
 package de.berlin.htw.entity.dto;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 import javax.inject.Inject;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinTable;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -42,16 +35,16 @@ public class UserEntity extends AbstractEntity implements UserModel {
     @Column(name = "ID", nullable = false, length = 36)
     private UUID id;
 
-@ManyToMany
+@ManyToMany(cascade= CascadeType.ALL, fetch = FetchType.LAZY)
 @JoinTable(
 name = "PROJECT_USER_MAPPING",
 joinColumns = @JoinColumn(name = "USER_ID"),
 inverseJoinColumns = @JoinColumn(name = "PROJECT_ID"))
 private Set<ProjectEntity> projects;
-    
+
     @Column(name = "NAME")
     private String name;
-    
+
     @Email
     @Column(name = "EMAIL", nullable = false, unique = true)
     private String email;
@@ -79,12 +72,13 @@ private Set<ProjectEntity> projects;
         return email;
     }
 
-    public String getProjects(){
-        String projectIds = "";
+    @Override
+    public ArrayList<String> getProjects(){
+        ArrayList<String> projectList = new ArrayList<>();
         for (ProjectEntity projectEntity : projects) {
-            projectIds = projectIds += projectEntity.getId() + " ";
+            projectList.add("id: "+projectEntity.getId());
         }
-        return projectIds;
+        return projectList;
     }
 
     public void setEmail(String email) {
@@ -95,10 +89,6 @@ private Set<ProjectEntity> projects;
         this.projects = projects;
     }
 
-    public void addTag(ProjectEntity project) {
-        projects.add(project);
-        project.getUsers().add(this);
-    }
 
-    
+
 }

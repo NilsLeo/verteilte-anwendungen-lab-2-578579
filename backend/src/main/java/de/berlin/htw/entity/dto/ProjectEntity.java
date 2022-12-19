@@ -1,5 +1,6 @@
 package de.berlin.htw.entity.dto;
 
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.Set;
 import javax.persistence.Column;
@@ -79,8 +80,13 @@ public class ProjectEntity extends AbstractEntity implements ProjectModel {
         this.id = UUID.fromString(id);
     }
 
-    public Set<UserEntity> getUsers() {
-        return users;
+    @Override
+    public ArrayList<String> getUsers(){
+        ArrayList<String> userList = new ArrayList<>();
+        for (UserEntity userEntity : users) {
+            userList.add("id: "+userEntity.getId());
+        }
+        return userList;
     }
 
     public void setUsers(Set<UserEntity> users) {
