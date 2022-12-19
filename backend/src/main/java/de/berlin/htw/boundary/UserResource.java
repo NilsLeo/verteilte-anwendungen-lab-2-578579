@@ -74,6 +74,7 @@ public class UserResource implements UserEndpoint {
         if (user.getId() != null) {
             throw new BadRequestException("User ID should not be set in payload");
         } else {
+            user.setId(userId);
             ArrayList<ProjectEntity> projects= new ArrayList<>();
             projects.add(projectRepository.get(projectId));
             user.setProjects(projects);
