@@ -32,7 +32,7 @@ class UserRepositoryTest extends AbstractTest {
     static final String DESCRIPTION = "Description";
 
     @Inject
-    UserRepository repository;
+    UserRepository userRepository;
     @Inject
     ProjectRepository projectRepository;
     
@@ -50,7 +50,7 @@ class UserRepositoryTest extends AbstractTest {
     void testTransactionRequired() {
         assertThrows(
             TransactionalException.class,
-            () -> repository.add(new UserEntity()));
+            () -> userRepository.add(new UserEntity()));
     }
 
     @Test
@@ -62,19 +62,20 @@ class UserRepositoryTest extends AbstractTest {
         final ProjectEntity projectEntity = new ProjectEntity();
         projectEntity.setDescription(DESCRIPTION);
         projectEntity.setTitle(TITLE);
+        
         Set<ProjectEntity> projects = new HashSet<>();
         projects.add(projectEntity);
         userEntity.setProjects(projects);
         transaction.begin();
         final String projectId = projectRepository.add(projectEntity);
-        final String userId = repository.add(userEntity);
+        final String userId = userRepository.add(userEntity);
         assertNotNull(userId);
         assertEquals(36, userId.length());
         transaction.commit();
-        repository.getEntityManager().clear();
+        userRepository.getEntityManager().clear();
 
-        assertEquals(NAME, repository.get(userId).getName());
-        assertEquals(EMAIL, repository.get(userId).getEmail());
+        assertEquals(NAME, userRepository.get(userId).getName());
+        assertEquals(EMAIL, userRepository.get(userId).getEmail());
     }
 
     @Test
@@ -86,7 +87,7 @@ class UserRepositoryTest extends AbstractTest {
         transaction.begin();
         assertThrows(
             ConstraintViolationException.class,
-            () -> repository.add(entity));
+            () -> userRepository.add(entity));
         transaction.rollback();
     }
 

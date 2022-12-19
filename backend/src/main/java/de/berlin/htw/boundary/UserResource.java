@@ -70,7 +70,7 @@ public class UserResource implements UserEndpoint {
     }
 
     @Override
-    public UserJson updateUser(String userId, String projectId, UserJson user) {
+    public UserJson associateProject(String userId, String projectId, UserJson user) {
         if (user.getId() != null) {
             throw new BadRequestException("User ID should not be set in payload");
         } else {

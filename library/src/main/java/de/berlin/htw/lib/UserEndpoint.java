@@ -69,7 +69,7 @@ public interface UserEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Update information of a user.")
     @APIResponse(responseCode = "404", description = "The user does not exist")
-    UserJson updateUser(
+    UserJson associateProject(
             @Parameter(description = "ID of the user", required = true) @PathParam("userId") String userId,
             @Parameter(description = "ID of the project to be connected", required = true) @PathParam("projectId") String projectId,
             @Parameter(description = "User information", required = true) @Valid UserJson user);
