@@ -1,8 +1,10 @@
 package de.berlin.htw.entity.dto;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.inject.Inject;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,7 +19,10 @@ import javax.validation.constraints.Email;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
+import de.berlin.htw.entity.dao.ProjectRepository;
+import de.berlin.htw.lib.model.ProjectModel;
 import de.berlin.htw.lib.model.UserModel;
+import liquibase.hub.model.Project;
 
 /**
  * @author Alexander Stanik [stanik@htw-berlin.de]
@@ -37,7 +42,7 @@ public class UserEntity extends AbstractEntity implements UserModel {
     @Column(name = "ID", nullable = false, length = 36)
     private UUID id;
 
-    @ManyToMany
+@ManyToMany
 @JoinTable(
 name = "PROJECT_USER_MAPPING",
 joinColumns = @JoinColumn(name = "USER_ID"),
@@ -74,8 +79,22 @@ private Set<ProjectEntity> projects;
         return email;
     }
 
+    public Set<ProjectEntity> getProjects(){
+        return projects;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public void setProjects(Set<ProjectEntity> projects){
+        this.projects = projects;
+    }
+
+    public void addTag(ProjectEntity project) {
+        projects.add(project);
+        project.getUsers().add(this);
+    }
+
     
 }

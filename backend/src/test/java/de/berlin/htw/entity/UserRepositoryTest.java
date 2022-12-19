@@ -6,6 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.Set;
+import java.util.HashSet;
+
 import javax.inject.Inject;
 import javax.transaction.Status;
 import javax.transaction.TransactionalException;
@@ -16,17 +19,22 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import de.berlin.htw.AbstractTest;
+import de.berlin.htw.entity.dao.ProjectRepository;
 import de.berlin.htw.entity.dao.UserRepository;
+import de.berlin.htw.entity.dto.ProjectEntity;
 import de.berlin.htw.entity.dto.UserEntity;
-
 @QuarkusTest
 class UserRepositoryTest extends AbstractTest {
     
     static final String NAME = "Max Mustermann";
     static final String EMAIL = "max.mustermann@example.org";
+    static final String TITLE = "Title";
+    static final String DESCRIPTION = "Description";
 
     @Inject
     UserRepository repository;
+    @Inject
+    ProjectRepository projectRepository;
     
     @Inject
     UserTransaction transaction;
@@ -47,12 +55,19 @@ class UserRepositoryTest extends AbstractTest {
 
     @Test
     void testAddAndGet() throws Exception {
-        final UserEntity entity = new UserEntity();
-        entity.setName(NAME);
-        entity.setEmail(EMAIL);
+        final UserEntity userEntity = new UserEntity();
+        userEntity.setName(NAME);
+        userEntity.setEmail(EMAIL);
 
+        final ProjectEntity projectEntity = new ProjectEntity();
+        projectEntity.setDescription(DESCRIPTION);
+        projectEntity.setTitle(TITLE);
+        Set<ProjectEntity> projects = new HashSet<>();
+        projects.add(projectEntity);
+        userEntity.setProjects(projects);
         transaction.begin();
-        final String userId = repository.add(entity);
+        final String projectId = projectRepository.add(projectEntity);
+        final String userId = repository.add(userEntity);
         assertNotNull(userId);
         assertEquals(36, userId.length());
         transaction.commit();
