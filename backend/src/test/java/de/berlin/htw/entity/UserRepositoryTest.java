@@ -25,7 +25,7 @@ import de.berlin.htw.entity.dto.ProjectEntity;
 import de.berlin.htw.entity.dto.UserEntity;
 @QuarkusTest
 class UserRepositoryTest extends AbstractTest {
-    
+
     static final String NAME = "Max Mustermann";
     static final String EMAIL = "max.mustermann@example.org";
     static final String TITLE = "Title";
@@ -35,7 +35,7 @@ class UserRepositoryTest extends AbstractTest {
     UserRepository userRepository;
     @Inject
     ProjectRepository projectRepository;
-    
+
     @Inject
     UserTransaction transaction;
 
@@ -55,6 +55,23 @@ class UserRepositoryTest extends AbstractTest {
 
     @Test
     void testAddAndGet() throws Exception {
+        final UserEntity entity = new UserEntity();
+        entity.setName(NAME);
+        entity.setEmail(EMAIL);
+
+        transaction.begin();
+        final String userId = userRepository.add(entity);
+        assertNotNull(userId);
+        assertEquals(36, userId.length());
+        transaction.commit();
+        userRepository.getEntityManager().clear();
+
+        assertEquals(NAME, userRepository.get(userId).getName());
+        assertEquals(EMAIL, userRepository.get(userId).getEmail());
+    }
+
+    @Test
+    void testManyToMany() throws Exception {
         final UserEntity userEntity = new UserEntity();
         userEntity.setName(NAME);
         userEntity.setEmail(EMAIL);
@@ -62,7 +79,7 @@ class UserRepositoryTest extends AbstractTest {
         final ProjectEntity projectEntity = new ProjectEntity();
         projectEntity.setDescription(DESCRIPTION);
         projectEntity.setTitle(TITLE);
-        
+
         Set<ProjectEntity> projects = new HashSet<>();
         projects.add(projectEntity);
         userEntity.setProjects(projects);
@@ -77,7 +94,6 @@ class UserRepositoryTest extends AbstractTest {
         assertEquals(NAME, userRepository.get(userId).getName());
         assertEquals(EMAIL, userRepository.get(userId).getEmail());
     }
-
     @Test
     void testValidationOnAdd() throws Exception {
         final UserEntity entity = new UserEntity();

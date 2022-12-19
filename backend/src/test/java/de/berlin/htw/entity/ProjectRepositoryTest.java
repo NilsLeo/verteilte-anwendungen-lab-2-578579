@@ -48,23 +48,23 @@ public class ProjectRepositoryTest {
             transaction.rollback();
         }
     }
-    
+
     @Test
     void testAddAndGet() throws Exception {
 
         final ProjectEntity projectEntity = new ProjectEntity();
         projectEntity.setDescription(DESCRIPTION);
         projectEntity.setTitle(TITLE);
-        
+
         transaction.begin();
-        
+
         final String projectId = projectRepository.add(projectEntity);
         assertNotNull(projectId);
         assertEquals(36, projectId.length());
-        
+
         transaction.commit();
         projectRepository.getEntityManager().clear();
-        
+
         assertEquals(TITLE, projectRepository.get(projectId).getTitle());
         assertEquals(DESCRIPTION, projectRepository.get(projectId).getDescription());
     }
@@ -75,7 +75,7 @@ public class ProjectRepositoryTest {
         final ProjectEntity projectEntity = new ProjectEntity();
         projectEntity.setDescription(DESCRIPTION);
         projectEntity.setTitle(TITLE);
-        
+
         transaction.begin();
         final String projectId = projectRepository.add(projectEntity);
         transaction.commit();
@@ -97,15 +97,15 @@ public class ProjectRepositoryTest {
         final ProjectEntity projectEntity = new ProjectEntity();
         projectEntity.setDescription(DESCRIPTION);
         projectEntity.setTitle(TITLE);
-        
-        transaction.begin();
-        final String projectId = projectRepository.add(projectEntity);
-        projectEntity.setId(projectId);
-        transaction.commit();
 
         transaction.begin();
-        projectEntity.setDescription(DESCRIPTION2);
-        projectRepository.set(projectEntity);
+        final String projectId = projectRepository.add(projectEntity);
+        transaction.commit();
+        projectRepository.getEntityManager().clear();
+        final ProjectEntity projectEntity1 = projectRepository.get(projectId);
+        transaction.begin();
+        projectEntity1.setDescription(DESCRIPTION2);
+        projectRepository.set(projectEntity1);
         transaction.commit();
 
         projectRepository.getEntityManager().clear();
@@ -121,13 +121,13 @@ public class ProjectRepositoryTest {
         final ProjectEntity projectEntity = new ProjectEntity();
         projectEntity.setDescription(DESCRIPTION);
         projectEntity.setTitle(TITLE);
-        
+
         transaction.begin();
-        
+
         final String projectId = projectRepository.add(projectEntity);
         assertNotNull(projectId);
         assertEquals(36, projectId.length());
-        
+
         transaction.commit();
         projectRepository.getEntityManager().clear();
         assertEquals(36, projectRepository.getAll().get(0).getId().length());
