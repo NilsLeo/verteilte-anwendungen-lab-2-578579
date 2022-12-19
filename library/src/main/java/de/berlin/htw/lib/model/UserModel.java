@@ -11,4 +11,6 @@ public interface UserModel {
 
     String getEmail();
 
+    String getProjects();
+
 }

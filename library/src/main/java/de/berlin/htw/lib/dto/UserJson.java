@@ -29,6 +29,9 @@ public class UserJson implements UserModel {
     @Email(message = "Email should be valid")
     private String email;
 
+    @JsonbProperty("projects")
+    private String projects;
+
     @JsonbProperty("registered_date")
     @JsonbDateFormat("dd-MM-yyyy")
     @PastOrPresent
@@ -45,6 +48,7 @@ public class UserJson implements UserModel {
         this.id = user.getId();
         this.name = user.getName();
         this.email = user.getEmail();
+        this.projects = user.getProjects();
     }
 
     @Override
@@ -80,6 +84,11 @@ public class UserJson implements UserModel {
 
     public void setRegisteredDate(final LocalDate registeredDate) {
         this.registeredDate = registeredDate;
+    }
+
+    @Override
+    public String getProjects() {
+        return projects;
     }
 
 }

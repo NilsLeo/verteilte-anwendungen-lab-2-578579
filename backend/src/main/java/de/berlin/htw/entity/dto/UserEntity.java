@@ -79,8 +79,12 @@ private Set<ProjectEntity> projects;
         return email;
     }
 
-    public Set<ProjectEntity> getProjects(){
-        return projects;
+    public String getProjects(){
+        String projectIds = "";
+        for (ProjectEntity projectEntity : projects) {
+            projectIds = projectIds += projectEntity.getId() + " ";
+        }
+        return projectIds;
     }
 
     public void setEmail(String email) {
