@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -30,6 +31,7 @@ public class ProjectRepositoryTest {
     static final String EMAIL = "max.mustermann@example.org";
     static final String TITLE = "Title";
     static final String DESCRIPTION = "Description";
+    static final String DESCRIPTION2 = "Description2";
 
     @Inject
     UserRepository userRepository;
@@ -40,107 +42,94 @@ public class ProjectRepositoryTest {
     @Inject
     UserTransaction transaction;
 
-    // @Test
-    // void testAddAndGet() throws Exception {
+    @AfterEach
+    void cleanUp() throws Exception {
+        if (transaction.getStatus() != Status.STATUS_NO_TRANSACTION) {
+            transaction.rollback();
+        }
+    }
+    
+    @Test
+    void testAddAndGet() throws Exception {
 
-    //     final ProjectEntity projectEntity = new ProjectEntity();
-    //     projectEntity.setDescription(DESCRIPTION);
-    //     projectEntity.setTitle(TITLE);
+        final ProjectEntity projectEntity = new ProjectEntity();
+        projectEntity.setDescription(DESCRIPTION);
+        projectEntity.setTitle(TITLE);
         
-    //     transaction.begin();
+        transaction.begin();
         
-    //     final String projectId = projectRepository.add(projectEntity);
-    //     assertNotNull(projectId);
-    //     assertEquals(36, projectId.length());
+        final String projectId = projectRepository.add(projectEntity);
+        assertNotNull(projectId);
+        assertEquals(36, projectId.length());
         
-    //     transaction.commit();
-    //     projectRepository.getEntityManager().clear();
+        transaction.commit();
+        projectRepository.getEntityManager().clear();
         
-    //     assertEquals(TITLE, projectRepository.get(projectId).getTitle());
-    //     assertEquals(DESCRIPTION, projectRepository.get(projectId).getDescription());
-    // }
-    // @Test
-    // void testDeleteProject() throws Exception {
-    //     final ProjectEntity projectEntity = new ProjectEntity();
-    //     projectEntity.setDescription(DESCRIPTION);
-    //     projectEntity.setTitle(TITLE);
+        assertEquals(TITLE, projectRepository.get(projectId).getTitle());
+        assertEquals(DESCRIPTION, projectRepository.get(projectId).getDescription());
+    }
+
+    @Test
+    void testDelete() throws Exception {
+
+        final ProjectEntity projectEntity = new ProjectEntity();
+        projectEntity.setDescription(DESCRIPTION);
+        projectEntity.setTitle(TITLE);
         
-    //     transaction.begin();
+        transaction.begin();
+        final String projectId = projectRepository.add(projectEntity);
+        transaction.commit();
+
+        transaction.begin();
+        projectRepository.remove(projectId);
+        transaction.commit();
+
+        projectRepository.getEntityManager().clear();
+        assertThrows(NullPointerException.class,
+        ()->{
+        projectRepository.get(projectId);
+        });
+    }
+
+    @Test
+    void testUpdate() throws Exception {
+
+        final ProjectEntity projectEntity = new ProjectEntity();
+        projectEntity.setDescription(DESCRIPTION);
+        projectEntity.setTitle(TITLE);
         
-    //     final String projectId = projectRepository.add(projectEntity);
-    //     projectRepository.remove(projectId);
+        transaction.begin();
+        final String projectId = projectRepository.add(projectEntity);
+        projectEntity.setId(projectId);
+        transaction.commit();
+
+        transaction.begin();
+        projectEntity.setDescription(DESCRIPTION2);
+        projectRepository.set(projectEntity);
+        transaction.commit();
+
+        projectRepository.getEntityManager().clear();
+
+        assertEquals(DESCRIPTION2, projectRepository.get(projectId).getDescription());
+
+    }
+
+
+    @Test
+    void testGetProjects()throws Exception{
+
+        final ProjectEntity projectEntity = new ProjectEntity();
+        projectEntity.setDescription(DESCRIPTION);
+        projectEntity.setTitle(TITLE);
         
-    //     transaction.commit();
-    //     projectRepository.getEntityManager().clear();
-    //     transaction.begin();
-    //     assertNull(projectRepository.get(projectId));
-    //     transaction.commit();
-    //     projectRepository.getEntityManager().clear();
-    // }
-
-
-    // @Test
-    // void testUpdateProject() throws Exception {
+        transaction.begin();
         
-    //     final ProjectEntity projectEntity = new ProjectEntity();
-
-    //     projectEntity.setDescription(DESCRIPTION);
-    //     projectEntity.setTitle(TITLE);
-
-    //     transaction.begin();
-    //     final String projectId = projectRepository.add(projectEntity);
-    //     projectEntity.setId(projectId);
-    //     transaction.commit();
-    //     repository.getEntityManager().clear();
-
-
-    //     projectEntity.setDescription(DESCRIPTION2);
+        final String projectId = projectRepository.add(projectEntity);
+        assertNotNull(projectId);
+        assertEquals(36, projectId.length());
         
-    //     transaction.begin();
-    //     projectRepository.set(projectEntity);
-    //     transaction.commit();
-    //     repository.getEntityManager().clear();
-        
-    //     assertEquals(DESCRIPTION2, repository.get(projectId).getDescription());
-
-    // }
-    // @Test
-    // void testGetProjects()throws Exception{
-
-    //     final ProjectEntity projectEntity = new ProjectEntity();
-    //     projectEntity.setDescription(DESCRIPTION);
-    //     projectEntity.setTitle(TITLE);
-        
-    //     transaction.begin();
-        
-    //     final String projectId = projectRepository.add(projectEntity);
-    //     assertNotNull(projectId);
-    //     assertEquals(36, projectId.length());
-        
-    //     transaction.commit();
-    //     projectRepository.getEntityManager().clear();
-    //     assertEquals(36, projectRepository.getAll().get(0).getId().length());
-    // }
-
-    // @Test
-    // void testAssociatedUsers()throws Exception{
-    //     final UserEntity userEntity = new UserEntity();
-    //     userEntity.setName(NAME);
-    //     userEntity.setEmail(EMAIL);
-
-    //     final ProjectEntity projectEntity = new ProjectEntity();
-    //     projectEntity.setDescription(DESCRIPTION);
-    //     projectEntity.setTitle(TITLE);
-
-    //     Set<UserEntity> users = new HashSet<>();
-    //     users.add(userEntity);
-    //     projectEntity.setUsers(users);
-
-    //     transaction.begin();
-    //     final String userId = userRepository.add(userEntity);
-
-    //     transaction.commit();
-
-
-    // }
+        transaction.commit();
+        projectRepository.getEntityManager().clear();
+        assertEquals(36, projectRepository.getAll().get(0).getId().length());
+    }
 }
